@@ -1,32 +1,82 @@
 .App {
+  overflow: scroll;
+  margin-top: 5px;
+  margin-left: 15px;
   text-align: center;
-}
-
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+  width: 400px;
+  height: 500px;
+  border: .5px solid black;
+  border-radius: 5px;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  flex-flow: column nowrap;
+  justify-content: flex-start;
 }
 
-.App-link {
-  color: #61dafb;
+.App::-webkit-scrollbar, .App::-webkit-scrollbar-button,
+.App::-webkit-scrollbar-corner, .App::-webkit-scrollbar-thumb,
+.App::-webkit-scrollbar-track, .App::-webkit-scrollbar-track-piece {
+  height: 0;
+  width: 0;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.chat-input {
+  margin-top: 5px;
+  margin-left: 15px;
+  height: 23px;
+  outline: none;
+  border: 1px solid black;
+  border-radius: 5px;
+}
+
+.App-input {
+  width: 358px;
+  text-indent: 5px;
+}
+
+.start-chat-btn {
+  width: 400px;
+  cursor: pointer;
+}
+
+.start-chat-btn:hover {
+  background-color: rgba(190, 190, 190, 0.123);
+}
+
+#select-file {
+  display: none;
+}
+
+.custom-input-file {
+  display: inline-block;
+  margin-left: 10px;
+  width: 24px;
+  height: 24px;
+  background-image: url(./static/clip-big.png);
+  background-size: 24px auto;
+  background-repeat: no-repeat;
+  transform: translateY(25%);
+  cursor: pointer;
+}
+
+.selected-image {
+  margin-left: 15px;
+  margin-top: 10px;
+  max-height: 70px;
+}
+
+.bot-connection {
+  margin-left: 15px;
+  margin-top: 10px;
+}
+
+.bot-connection > label {
+  line-height: 18px;
+}
+
+.bot-connection > input {
+  width: 350px;
+  outline: none;
+  border: .5px solid black;
+  border-radius: 4px;
+  height: 18px;
 }
