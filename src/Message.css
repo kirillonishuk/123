@@ -1,0 +1,74 @@
+.message-box {
+    display: inline-block;
+    max-width: 250px;
+    padding: 5px 15px;
+    margin: 3px 10px;
+    border-radius: 8px;
+    box-shadow: #e4eaef 0 3px 6px;
+    user-select: none;
+    word-break: break-all;
+    font: 14px/1em 'PTSans', 'Arial', sans-serif;
+}
+
+.outgoing {
+    margin-left: 45px;
+    background-color: #a0fffb4d;
+    align-self: flex-end;
+}
+
+.incoming {
+    height: auto;
+    margin-right: 45px;
+    background-color: #ffa0dd5e;
+    align-self: flex-start;
+    position: relative;
+}
+
+.image {
+    padding: 0;
+    background-color: initial;
+    border-radius: 0;
+}
+
+.image img {
+    max-width: 100%;
+}
+
+.outgoing:hover {
+    background-color: #a0fffb82;
+}
+
+.incoming:hover {
+    background-color: #ffa0dd8a;
+}
+
+.image.incoming:hover, .image.outgoing:hover {
+    background-color: initial;
+    border-radius: 4px;
+}
+
+.file-download {
+    font-size: .9em;
+    margin-left: 20px;
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.file-download::after {
+    position: absolute;
+    content: '';
+    left: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    background-size: 24px auto;
+    height: 24px;
+    width: 24px;
+    background-image: url(./static/clip-big.png);
+}
+
+.file-size {
+    text-align: end;
+    font-size: .7em;
+    color: #7c7c7c;
+}
