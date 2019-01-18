@@ -7,9 +7,13 @@ import mime from 'mime-types';
 class Message extends Component {
 
     createFile = () => {
-        console.log(this.props.file.byteLength);
         const file = new Blob([this.props.file], { type: mime.lookup(this.props.name.split('.')[1]) });
-        console.log(file);
+
+        return URL.createObjectURL(file)
+    }
+
+    createAudio = () => {
+        const file = new Blob([this.props.file], { type: this.props.mime });
 
         return URL.createObjectURL(file)
     }
@@ -31,6 +35,11 @@ class Message extends Component {
                 className="file-download"
             >{this.props.name}</a>
             <div className="file-size">{`${this.props.file.byteLength} байт`}</div>
+        </div>,
+        'audio': (messageType) => <div className={messageType}>
+            <audio controls className="voice-msg">
+                <source src={this.createAudio()} type={this.props.mime} />
+            </audio>
         </div>,
     }
     render() {

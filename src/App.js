@@ -13,7 +13,7 @@ class App extends Component {
         this.state = {
             botId: '',
             userId: new Date().getTime() * Math.floor(Math.random() * 999 + 1),
-            text: "",
+            text: '',
             box: [],
             image: '',
             filename: ''
@@ -64,17 +64,6 @@ class App extends Component {
                 type: 'message',
                 text: this.state.text
             };
-
-            this.setState((prevState) => {
-                return {
-                    text: '',
-                    box: prevState.box.concat({
-                        text: prevState.text,
-                        type: 'outgoing',
-                        form: 'message'
-                    })
-                }
-            })
         };
         if (this.state.image) {
             message = {
@@ -83,21 +72,15 @@ class App extends Component {
                 filename: this.state.filename,
                 type: 'picture'
             };
-
-            this.setState((prevState) => {
-                return {
-                    image: '',
-                    filename: '',
-                    box: prevState.box.concat({
-                        image: prevState.image.split(',')[1],
-                        type: 'outgoing',
-                        form: 'image'
-                    })
-                }
-            });
         };
-        if (message.type)
+        if (message.type) {
             this.socket.emit('web-chat', message);
+            this.setState({
+                image: '',
+                text: '',
+                filename: ''
+            })
+        }
     }
 
     renderMessage = () => {
@@ -118,6 +101,7 @@ class App extends Component {
 
     loadImage = (event) => {
         const files = event.target.files;
+        console.log(files)
 
         if (FileReader && files && files.length) {
             const reader = new FileReader();
@@ -128,9 +112,9 @@ class App extends Component {
                 });
             };
             const filename = files[0].name,
-                file = files[0];
-            reader.readAsDataURL(file);
+            file = files[0];
             event.target.files = null;
+            reader.readAsDataURL(file);
             this.chat.focus();
         } else {
             alert('Error!')

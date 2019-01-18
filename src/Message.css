@@ -72,3 +72,8 @@
     font-size: .7em;
     color: #7c7c7c;
 }
+
+.voice-msg {
+    height: 35px;
+    max-width: 225px;
+}

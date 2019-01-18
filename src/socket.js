@@ -6,6 +6,13 @@ const cases = {
             form: 'message'
         }
     },
+    'component-ingoing-message': function (wmsg) {
+        return {
+            text: wmsg.text,
+            type: 'outgoing',
+            form: 'message'
+        }
+    },
     'component-keyboard': function (wmsg) {
         let variants = '';
         wmsg.buttons.forEach((elem, id, array) => {
@@ -25,6 +32,22 @@ const cases = {
             filename: wmsg.filename,
             type: 'incoming',
             form: 'image'
+        }
+    },
+    'component-ingoing-picture': function (wmsg) {
+        return {
+            image: wmsg.image,
+            filename: wmsg.filename,
+            type: 'outgoing',
+            form: 'image'
+        }
+    },
+    'component-outgoing-audio': function (wmsg) {
+        return {
+            file: wmsg.file,
+            mime: wmsg.mime,
+            type: 'incoming',
+            form: 'audio'
         }
     },
     'component-outgoing-document': function (wmsg) {
