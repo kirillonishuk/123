@@ -8,33 +8,39 @@ import config from './config/config.json';
 class App extends Component {
 
     constructor(props) {
-        super(props)
+        super(props);
 
         this.state = {
             botId: '',
-            userId: new Date().getTime() * Math.floor(Math.random() * 999 + 1),
+            userId: crypto.getRandomValues(new Uint32Array(1)).toString() + '-' + new Date().getTime().toString(),
             text: '',
             box: [],
             image: '',
             filename: ''
         };
 
-        this.socket = io('wss://localhost:3015', {
+        const url = process.env.NODE_ENV === "development" ? config.url.dev : config.url.prod;
+        this.socket = io(url, {
             path: '/ws', transports: ['websocket']
-        })
+        });
+
         this.socket.on('web-bot-message', (wmsg) => {
             const result = wmsgParser(wmsg);
 
             this.setState({
                 box: this.state.box.concat(result)
             })
-        })
+        });
     };
 
     componentDidUpdate(prevProps, prevState) {
         if (this.state.box.length !== prevState.box.length) {
             this.scrollToBottom();
         };
+    };
+
+    componentWillUnmount() {
+        this.socket.close();
     };
 
     scrollToBottom = () => {
@@ -49,7 +55,7 @@ class App extends Component {
         })
     };
 
-    sendMessage = (event) => {
+    sendMessage = (event, answer) => {
         event.preventDefault();
         let message = {
             bot: {
@@ -58,11 +64,11 @@ class App extends Component {
             },
             user: this.state.userId
         };
-        if (this.state.text) {
+        if (this.state.text || answer) {
             message = {
                 ...message,
                 type: 'message',
-                text: this.state.text
+                text: answer || this.state.text
             };
         };
         if (this.state.image) {
@@ -75,17 +81,16 @@ class App extends Component {
         };
         if (message.type) {
             this.socket.emit('web-chat', message);
-            this.setState({
-                image: '',
-                text: '',
-                filename: ''
-            })
-        }
-    }
-
-    renderMessage = () => {
-        return this.state.box.map((elem, id) => <Message key={id} {...elem} />)
-    }
+            if (!answer) {
+                this.setState({
+                    image: '',
+                    text: '',
+                    filename: ''
+                })
+            };
+        };
+        this.chat.focus();
+    };
 
     startChat = () => {
         this.socket.emit('web-chat', {
@@ -97,12 +102,10 @@ class App extends Component {
             text: '/start',
             type: 'message'
         })
-    }
+    };
 
     loadImage = (event) => {
         const files = event.target.files;
-        console.log(files)
-
         if (FileReader && files && files.length) {
             const reader = new FileReader();
             reader.onload = () => {
@@ -112,54 +115,59 @@ class App extends Component {
                 });
             };
             const filename = files[0].name,
-            file = files[0];
+                file = files[0];
             event.target.files = null;
             reader.readAsDataURL(file);
             this.chat.focus();
         } else {
             alert('Error!')
         };
-    }
+    };
+
+    renderMessage = () => {
+        return this.state.box.map((elem, id) => <Message sendMessage={this.sendMessage} key={id} {...elem} />)
+    };
+
+    renderInput = () => {
+        // return <button
+        //     className="start-chat-btn"
+        //     onClick={this.startChat}
+        // >Start</button>
+        return <form className="send-message-form" onSubmit={this.sendMessage}>
+            <label htmlFor="select-file" className="custom-select-input-file"></label>
+            <input type="file" id="select-file" accept="image/*" onChange={this.loadImage} />
+            <input
+                ref={ref => this.chat = ref}
+                className="message-input"
+                value={this.state.text}
+                onChange={this.changeMessage}
+                type="text"
+                placeholder="Введите сообщение..."
+            />
+            <div className="send-message-button" onClick={this.sendMessage}></div>
+        </form>
+    };
 
     render() {
         return (
-            <React.Fragment>
-                <div className="bot-connection">
-                    <label htmlFor="bot-id">Bot:ID </label>
+            <div className="chat-container">
+                <div className="bot-connection-container">
+                    <label htmlFor="bot-id-input">ID Бота: </label>
                     <input
+                        autoFocus
                         type="text"
-                        id="bot-id"
+                        id="bot-id-input"
+                        placeholder="Введите ID"
                         value={this.state.botId}
                         onChange={(event) => { this.setState({ botId: event.target.value }) }}
                     />
                 </div>
-                <div className="App" ref={ref => { this.chatbox = ref }}>
+                <div className="message-container" ref={ref => { this.chatbox = ref }}>
+                    <div className="scroll-fix"></div>
                     {this.renderMessage()}
                 </div>
-                {!this.state.box.length ?
-                    <button
-                        className="chat-input start-chat-btn"
-                        onClick={this.startChat}
-                    >Start</button>
-                    :
-                    <form onSubmit={this.sendMessage}>
-                        <input
-                            ref={ref => this.chat = ref}
-                            autoFocus
-                            className="chat-input App-input"
-                            value={this.state.text}
-                            onChange={this.changeMessage}
-                            type="text"
-                            placeholder="Введите сообщение..."
-                        />
-                        <label htmlFor="select-file" className="custom-input-file"></label>
-                        <input type="file" id="select-file" accept="image/*" onChange={this.loadImage} />
-                    </form>}
-                {this.state.image ?
-                    <img src={this.state.image} className="selected-image" alt="selected" />
-                    :
-                    null}
-            </React.Fragment>
+                {this.renderInput()}
+            </div>
         );
     };
 }

@@ -3,27 +3,24 @@ const cases = {
         return {
             text: wmsg.text,
             type: 'incoming',
-            form: 'message'
-        }
+            form: 'message',
+            time: new Date()
+        };
     },
     'component-ingoing-message': function (wmsg) {
         return {
             text: wmsg.text,
             type: 'outgoing',
-            form: 'message'
-        }
+            form: 'message',
+            time: new Date()
+        };
     },
     'component-keyboard': function (wmsg) {
-        let variants = '';
-        wmsg.buttons.forEach((elem, id, array) => {
-            if (id !== array.length - 1)
-                variants += `${elem.text}/`;
-            else variants += elem.text;
-        });
         return {
-            text: `Варианты ответа: ${variants}`,
+            buttons: wmsg.buttons,
             type: 'incoming',
-            form: 'message'
+            form: 'keyboard',
+            time: new Date()
         };
     },
     'component-outgoing-picture': function (wmsg) {
@@ -31,39 +28,44 @@ const cases = {
             image: wmsg.image,
             filename: wmsg.filename,
             type: 'incoming',
-            form: 'image'
-        }
+            form: 'image',
+            time: new Date()
+        };
     },
     'component-ingoing-picture': function (wmsg) {
         return {
             image: wmsg.image,
             filename: wmsg.filename,
             type: 'outgoing',
-            form: 'image'
-        }
+            form: 'image',
+            time: new Date()
+        };
     },
     'component-outgoing-audio': function (wmsg) {
         return {
             file: wmsg.file,
             mime: wmsg.mime,
             type: 'incoming',
-            form: 'audio'
-        }
+            form: 'audio',
+            time: new Date()
+        };
     },
     'component-outgoing-document': function (wmsg) {
         return {
             file: wmsg.file,
             name: wmsg.name,
             type: 'incoming',
-            form: 'file'
-        }
+            form: 'file',
+            time: new Date()
+        };
     },
     'default': function (wmsg) {
         return {
             text: wmsg.text || 'Error message!',
             type: 'incoming',
-            form: 'message'
-        }
+            form: 'message',
+            time: new Date()
+        };
     }
 }
 
