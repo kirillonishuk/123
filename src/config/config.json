@@ -1,6 +1,9 @@
 {
     "bot": {
-        "type": "web",
-        "id": "762273404"
+        "type": "web"
+    },
+    "url": {
+        "dev": "wss://localhost:3015",
+        "prod": "wss://193.124.114.63:3015"
     }
 }
