@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
+import io from 'socket.io-client';
+import classNames from 'classnames';
 import './App.css';
 import Message from './Message';
-import io from 'socket.io-client';
 import wmsgParser from './socket';
 import config from './config/config.json';
 
@@ -15,8 +16,7 @@ class App extends Component {
             userId: crypto.getRandomValues(new Uint32Array(1)).toString() + '-' + new Date().getTime().toString(),
             text: '',
             box: [],
-            image: '',
-            filename: ''
+            botIsActive: false
         };
 
         const url = process.env.NODE_ENV === "development" ? config.url.dev : config.url.prod;
@@ -57,42 +57,31 @@ class App extends Component {
 
     sendMessage = (event, answer) => {
         event.preventDefault();
+        event.stopPropagation();
+
         let message = {
             bot: {
                 type: config.bot.type,
                 id: this.state.botId
             },
-            user: this.state.userId
+            user: this.state.userId,
+            type: 'message',
+            text: answer || this.state.text
         };
-        if (this.state.text || answer) {
-            message = {
-                ...message,
-                type: 'message',
-                text: answer || this.state.text
-            };
+        this.socket.emit('web-chat', message);
+        if (!answer) {
+            this.setState({
+                text: ''
+            })
         };
-        if (this.state.image) {
-            message = {
-                ...message,
-                image: this.state.image.split(',')[1],
-                filename: this.state.filename,
-                type: 'picture'
-            };
-        };
-        if (message.type) {
-            this.socket.emit('web-chat', message);
-            if (!answer) {
-                this.setState({
-                    image: '',
-                    text: '',
-                    filename: ''
-                })
-            };
-        };
+        this.chat.disabled = false;
         this.chat.focus();
     };
 
-    startChat = () => {
+    startChat = (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+
         this.socket.emit('web-chat', {
             bot: {
                 type: config.bot.type,
@@ -101,23 +90,36 @@ class App extends Component {
             user: this.state.userId,
             text: '/start',
             type: 'message'
+        });
+        this.setState({
+            botIsActive: true
         })
+        this.chat.disabled = false;
+        this.chat.focus();
     };
 
     loadImage = (event) => {
-        const files = event.target.files;
+        const files = event.target.files,
+            filename = files[0].name,
+            file = files[0];
         if (FileReader && files && files.length) {
             const reader = new FileReader();
             reader.onload = () => {
-                this.setState({
-                    image: reader.result,
-                    filename,
-                });
+                let message = {
+                    bot: {
+                        type: config.bot.type,
+                        id: this.state.botId
+                    },
+                    user: this.state.userId,
+                    image: reader.result.split(',')[1],
+                    filename: filename,
+                    type: 'picture'
+                };
+                this.socket.emit('web-chat', message);
             };
-            const filename = files[0].name,
-                file = files[0];
-            event.target.files = null;
+
             reader.readAsDataURL(file);
+            event.target.value = '';
             this.chat.focus();
         } else {
             alert('Error!')
@@ -128,14 +130,31 @@ class App extends Component {
         return this.state.box.map((elem, id) => <Message sendMessage={this.sendMessage} key={id} {...elem} />)
     };
 
+    renderInitButton = () => {
+        if (!this.state.botIsActive) return <div className="init-bot-btn">
+            <button onClick={this.startChat} className="start-chat-btn">
+                <i className="zmdi zmdi-arrow-right"></i>
+            </button>
+            <div className="start-chat-info">Введите ID бота и нажмите на кнопку для начала общения с ним.</div>
+        </div>
+    };
+
     renderInput = () => {
-        // return <button
-        //     className="start-chat-btn"
-        //     onClick={this.startChat}
-        // >Start</button>
+        const blockerStyles = classNames({
+            'blocker-hide': this.state.botIsActive,
+            'blocker': true
+        });
+
         return <form className="send-message-form" onSubmit={this.sendMessage}>
+            <div className={blockerStyles}></div>
             <label htmlFor="select-file" className="custom-select-input-file"></label>
-            <input type="file" id="select-file" accept="image/*" onChange={this.loadImage} />
+            <input
+                type="file"
+                id="select-file"
+                accept="image/*"
+                onChange={this.loadImage}
+                disabled={!this.state.botIsActive}
+            />
             <input
                 ref={ref => this.chat = ref}
                 className="message-input"
@@ -143,6 +162,7 @@ class App extends Component {
                 onChange={this.changeMessage}
                 type="text"
                 placeholder="Введите сообщение..."
+                disabled={!this.state.botIsActive}
             />
             <div className="send-message-button" onClick={this.sendMessage}></div>
         </form>
@@ -151,7 +171,7 @@ class App extends Component {
     render() {
         return (
             <div className="chat-container">
-                <div className="bot-connection-container">
+                <form className="bot-connection-container" onSubmit={this.startChat} autoComplete="off">
                     <label htmlFor="bot-id-input">ID Бота: </label>
                     <input
                         autoFocus
@@ -161,9 +181,10 @@ class App extends Component {
                         value={this.state.botId}
                         onChange={(event) => { this.setState({ botId: event.target.value }) }}
                     />
-                </div>
+                </form>
                 <div className="message-container" ref={ref => { this.chatbox = ref }}>
                     <div className="scroll-fix"></div>
+                    {this.renderInitButton()}
                     {this.renderMessage()}
                 </div>
                 {this.renderInput()}

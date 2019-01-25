@@ -64,6 +64,11 @@
     color: rgb(3, 117, 208);
     cursor: pointer;
     font-size: 14px;
+    user-select: none;
+}
+
+.answer-button::first-line {
+    text-transform: uppercase;
 }
 
 .answer-button:hover {
