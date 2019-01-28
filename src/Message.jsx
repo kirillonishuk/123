@@ -16,7 +16,7 @@ class Message extends Component {
     renderButtons = () => {
         return this.props.buttons.map((button, id) =>
             <div className="answer-button" key={id} onClick={(event) => this.props.sendMessage(event, button.text)}>
-                {button.text}
+                {button.text.toUpperCase()}
             </div>
         )
     };
@@ -39,11 +39,11 @@ class Message extends Component {
 
     renderMessage = {
         'message': (messageType) => <div className={messageType}>
-            <span dangerouslySetInnerHTML={{ __html: this.linkify(this.props.text) }}></span>
+            <div dangerouslySetInnerHTML={{ __html: this.linkify(this.props.text) }}></div>
             {this.renderTime()}
         </div>,
         'image': (messageType) => <div className={messageType}>
-            <a target="_blank" href={`${config.urlHttp[process.env.NODE_ENV]}/storage/${this.props.filename}`}>
+            <a target="_blank" rel="noopener noreferrer" href={`${config.urlHttp[process.env.NODE_ENV]}/storage/${this.props.filename}`}>
                 <img
                     src={`data:image/png;base64,${this.props.image}`}
                     alt="sending"

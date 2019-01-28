@@ -43,32 +43,25 @@
 
 .buttons-box {
     width: 65%;
-    height: 0;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
+    flex-wrap: wrap;
     background: none;
-    padding: 8px 10px;
     margin: 15px 0 22px 60px;
+    text-align: center;
 }
 
 .answer-button {
-    min-width: 55px;
+    display: inline-block;
+    min-width: 45px;
     height: 14px;
-    padding: 5px 5px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    margin: 4px;
+    padding: 2px 10px 5px;
     border-radius: 8px;
+    text-align: center;
     border: 1px solid rgb(3, 117, 208);
     color: rgb(3, 117, 208);
     cursor: pointer;
     font-size: 14px;
     user-select: none;
-}
-
-.answer-button::first-line {
-    text-transform: uppercase;
 }
 
 .answer-button:hover {
