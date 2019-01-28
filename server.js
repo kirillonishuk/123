@@ -5,6 +5,8 @@ const http = require('http');
 const https = require('https');
 const app = express();
 
+const config = require('./config');
+
 const credentials = {
     key: fs.readFileSync('./https/key.pem', 'utf8'),
     cert: fs.readFileSync('./https/cert.pem', 'utf8')
@@ -19,5 +21,11 @@ app.get('/*', function (req, res) {
 const httpServer = http.createServer(app);
 const httpsServer = https.createServer(credentials, app);
 
-httpServer.listen(3016);
-httpsServer.listen(3017);
+httpServer.listen(config.httpPort, (err) => {
+    if (err) console.log(err);
+    console.log(`HTTP: ${config.httpPort}`)
+});
+httpsServer.listen(config.httpsPort, (err) => {
+    if (err) console.log(err);
+    console.log(`HTTPS: ${config.httpsPort}`)
+});
