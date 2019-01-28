@@ -2,8 +2,12 @@
     "bot": {
         "type": "web"
     },
-    "url": {
-        "dev": "wss://localhost:3015",
-        "prod": "wss://193.124.114.63:3015"
+    "urlWs": {
+        "development": "wss://localhost:3015",
+        "production": "wss://193.124.114.63:3015"
+    },
+    "urlHttp": {
+        "development": "https://localhost:3015",
+        "production": "https://193.124.114.63:3015"
     }
 }

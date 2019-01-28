@@ -92,6 +92,7 @@
 }
 
 .file-download {
+    display: block;
     font-size: .9em;
     margin-left: 20px;
     color: black;

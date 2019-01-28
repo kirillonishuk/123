@@ -19,7 +19,7 @@ class App extends Component {
             botIsActive: false
         };
 
-        const url = process.env.NODE_ENV === "development" ? config.url.dev : config.url.prod;
+        const url = config.urlWs[process.env.NODE_ENV];
         this.socket = io(url, {
             path: '/ws', transports: ['websocket']
         });

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './Message.css';
 import classNames from 'classnames';
 import mime from 'mime-types';
+import config from './config/config.json';
 
 
 class Message extends Component {
@@ -42,10 +43,12 @@ class Message extends Component {
             {this.renderTime()}
         </div>,
         'image': (messageType) => <div className={messageType}>
-            <img
-                src={`data:image/png;base64,${this.props.image}`}
-                alt="sending"
-            />
+            <a target="_blank" href={`${config.urlHttp[process.env.NODE_ENV]}/storage/${this.props.filename}`}>
+                <img
+                    src={`data:image/png;base64,${this.props.image}`}
+                    alt="sending"
+                />
+            </a>
             {this.renderTime()}
         </div>,
         'file': (messageType) => <div className={messageType}>
@@ -53,7 +56,7 @@ class Message extends Component {
                 href={this.createFile()}
                 download={this.props.name}
                 className="file-download"
-            >{this.props.name}</a>
+            >Документ</a>
             <div className="file-size">{`${this.props.file.byteLength} байт`}</div>
             {this.renderTime()}
         </div>,
