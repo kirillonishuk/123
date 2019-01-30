@@ -8,8 +8,8 @@ const app = express();
 const config = require('./config');
 
 const credentials = {
-    key: fs.readFileSync('./https/key.pem', 'utf8'),
-    cert: fs.readFileSync('./https/cert.pem', 'utf8')
+    key: fs.readFileSync('./https/server.key', 'utf8'),
+    cert: fs.readFileSync('./https/server.crt', 'utf8')
 };
 
 app.use(express.static(path.join(__dirname, 'build')));
