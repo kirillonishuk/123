@@ -38,6 +38,7 @@
 .bot-connection-container > input::placeholder {
   color: #fff;
   font-weight: 250;
+  user-select: none;
 }
 
 .message-container {
@@ -76,43 +77,35 @@
   border-top: 1px solid #eee;
 }
 
-.custom-select-input-file, .send-message-button {
+.custom-select-input-image, .send-message-button, .custom-select-input-doc {
   width: 24px;
   height: 24px;
   background-size: 24px auto;
   display: block;
   background-repeat: no-repeat;
   cursor: pointer;
+  text-align: center;
+  font-size: 20px;
+  color: #616161;
 }
 
-.custom-select-input-file {
-  background-image: url(./static/camera.png);
+.custom-select-input-image > i, .send-message-button > i, .custom-select-input-doc > i {
+  line-height: 24px;
 }
 
-.custom-select-input-file:hover {
-  background-image: url(./static/camera-hover.png);
+.custom-select-input-image:hover, .send-message-button:hover, .custom-select-input-doc:hover {
+  color: #242424;
 }
 
-#select-file {
+#select-image, #select-doc {
   display: none;
-}
-
-.send-message-button {
-  width: 20px;
-  height: 20px;
-  background-size: 20px auto;
-  background-image: url(./static/send.png);
-}
-
-.send-message-button:hover {
-  background-image: url(./static/send-selected.png);
 }
 
 .message-input {
   height: 27px;
   outline: none;
   border: none;
-  width: 70%;
+  width: 65%;
   text-indent: 5px;
   color: #4b4b4b;
   font-size: 14px;
@@ -140,7 +133,7 @@
 
 .start-chat-btn i {
   font-size: 22px;
-  line-height: 40px;
+  line-height: 36px;
 }
 
 .start-chat-info {

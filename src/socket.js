@@ -59,6 +59,15 @@ const cases = {
             time: new Date()
         };
     },
+    'component-ingoing-document': function (wmsg) {
+        return {
+            file: wmsg.file,
+            name: wmsg.name,
+            type: 'outgoing',
+            form: 'file',
+            time: new Date()
+        };
+    },
     'default': function (wmsg) {
         return {
             text: wmsg.text || 'Error message!',

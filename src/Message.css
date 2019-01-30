@@ -125,3 +125,11 @@
     cursor: default;
     user-select: none;
 }
+
+.outgoing .file-download {
+    color: #eceff1;
+}
+
+.outgoing .file-size {
+    color: #83ff89;
+}

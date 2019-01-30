@@ -31,6 +31,10 @@ class App extends Component {
                 box: this.state.box.concat(result)
             })
         });
+
+        this.socket.on('web-bot-error', (wmsg) => {
+            console.log(wmsg)
+        });
     };
 
     componentDidUpdate(prevProps, prevState) {
@@ -58,6 +62,7 @@ class App extends Component {
     sendMessage = (event, answer) => {
         event.preventDefault();
         event.stopPropagation();
+        if(!this.state.botIsActive) return;
 
         let message = {
             bot: {
@@ -99,6 +104,10 @@ class App extends Component {
     };
 
     loadImage = (event) => {
+        if(!this.state.botIsActive) {
+            return;
+        };
+
         const files = event.target.files,
             filename = files[0].name,
             file = files[0];
@@ -114,6 +123,38 @@ class App extends Component {
                     image: reader.result.split(',')[1],
                     filename: filename,
                     type: 'picture'
+                };
+                this.socket.emit('web-chat', message);
+            };
+
+            reader.readAsDataURL(file);
+            event.target.value = '';
+            this.chat.focus();
+        } else {
+            alert('Error!')
+        };
+    };
+
+    loadDoc = (event) => {
+        if(!this.state.botIsActive) {
+            return;
+        };
+
+        const files = event.target.files,
+            filename = files[0].name,
+            file = files[0];
+        if (FileReader && files && files.length) {
+            const reader = new FileReader();
+            reader.onload = () => {
+                let message = {
+                    bot: {
+                        type: config.bot.type,
+                        id: this.state.botId
+                    },
+                    user: this.state.userId,
+                    file: reader.result.split(',')[1],
+                    filename: filename,
+                    type: 'file'
                 };
                 this.socket.emit('web-chat', message);
             };
@@ -147,12 +188,23 @@ class App extends Component {
 
         return <form className="send-message-form" onSubmit={this.sendMessage}>
             <div className={blockerStyles}></div>
-            <label htmlFor="select-file" className="custom-select-input-file"></label>
+            <label htmlFor="select-image" className="custom-select-input-image">
+                <i className="zmdi zmdi-camera-add"></i>
+            </label>
             <input
                 type="file"
-                id="select-file"
+                id="select-image"
                 accept="image/*"
                 onChange={this.loadImage}
+                disabled={!this.state.botIsActive}
+            />
+            <label htmlFor="select-doc" className="custom-select-input-doc">
+                <i className="zmdi zmdi-attachment-alt"></i>
+            </label>
+            <input
+                type="file"
+                id="select-doc"
+                onChange={this.loadDoc}
                 disabled={!this.state.botIsActive}
             />
             <input
@@ -164,7 +216,9 @@ class App extends Component {
                 placeholder="Введите сообщение..."
                 disabled={!this.state.botIsActive}
             />
-            <div className="send-message-button" onClick={this.sendMessage}></div>
+            <div className="send-message-button" onClick={this.sendMessage}>
+                <i className="zmdi zmdi-mail-send"></i>
+            </div>
         </form>
     };
 
