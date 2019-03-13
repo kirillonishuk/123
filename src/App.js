@@ -16,7 +16,9 @@ class App extends Component {
             userId: crypto.getRandomValues(new Uint32Array(1)).toString() + '-' + new Date().getTime().toString(),
             text: '',
             box: [],
-            botIsActive: false
+            botIsActive: false,
+            isIdInPath: false,
+            infoMessage: 'Введите ID бота и нажмите на кнопку для начала общения с ним.'
         };
 
         const url = config.urlWs[process.env.NODE_ENV];
@@ -27,15 +29,33 @@ class App extends Component {
         this.socket.on('web-bot-message', (wmsg) => {
             const result = wmsgParser(wmsg);
 
-            this.setState({
-                box: this.state.box.concat(result)
-            })
+            if (!(result.text === "/start" && result.type === "outgoing")) {
+                this.setState({
+                    box: this.state.box.concat(result)
+                })
+            }
         });
 
         this.socket.on('web-bot-error', (wmsg) => {
             console.log(wmsg)
         });
     };
+
+    componentDidMount() {
+        let botId = window.location.pathname.slice(1);
+        if (botId) {
+            this.setState({
+                botId: botId,
+                isIdInPath: true,
+                infoMessage: 'Нажмите на кнопку для начала общения с ботом.'
+            }, () => {
+                if(window.location.hash === "#start"){
+                    this.startChat();
+                }
+                    
+            });
+        }
+    }
 
     componentDidUpdate(prevProps, prevState) {
         if (this.state.box.length !== prevState.box.length) {
@@ -62,7 +82,7 @@ class App extends Component {
     sendMessage = (event, answer) => {
         event.preventDefault();
         event.stopPropagation();
-        if(!this.state.botIsActive) return;
+        if (!this.state.botIsActive) return;
 
         let message = {
             bot: {
@@ -84,8 +104,10 @@ class App extends Component {
     };
 
     startChat = (event) => {
-        event.preventDefault();
-        event.stopPropagation();
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
 
         this.socket.emit('web-chat', {
             bot: {
@@ -104,7 +126,7 @@ class App extends Component {
     };
 
     loadImage = (event) => {
-        if(!this.state.botIsActive) {
+        if (!this.state.botIsActive) {
             return;
         };
 
@@ -136,7 +158,7 @@ class App extends Component {
     };
 
     loadDoc = (event) => {
-        if(!this.state.botIsActive) {
+        if (!this.state.botIsActive) {
             return;
         };
 
@@ -176,7 +198,7 @@ class App extends Component {
             <button onClick={this.startChat} className="start-chat-btn">
                 <i className="zmdi zmdi-arrow-right"></i>
             </button>
-            <div className="start-chat-info">Введите ID бота и нажмите на кнопку для начала общения с ним.</div>
+            <div className="start-chat-info">{this.state.infoMessage}</div>
         </div>
     };
 
@@ -221,21 +243,31 @@ class App extends Component {
             </div>
         </form>
     };
-
     render() {
+        let form =
+            <form className="bot-connection-container" onSubmit={this.startChat} autoComplete="off">
+                <label htmlFor="bot-id-input">ID Бота: </label>
+                <input
+                    autoFocus
+                    type="text"
+                    id="bot-id-input"
+                    placeholder="Введите ID"
+                    value={this.state.botId}
+                    onChange={(event) => { this.setState({ botId: event.target.value }) }}
+                />
+            </form>;
+
+        if (this.state.isIdInPath) {
+            form =
+                <form className="bot-connection-container">
+                    <label htmlFor="bot-id-input">ID Бота: </label>
+                    <span>{this.state.botId}</span>
+                </form>;
+        }
+
         return (
             <div className="chat-container">
-                <form className="bot-connection-container" onSubmit={this.startChat} autoComplete="off">
-                    <label htmlFor="bot-id-input">ID Бота: </label>
-                    <input
-                        autoFocus
-                        type="text"
-                        id="bot-id-input"
-                        placeholder="Введите ID"
-                        value={this.state.botId}
-                        onChange={(event) => { this.setState({ botId: event.target.value }) }}
-                    />
-                </form>
+                {form}
                 <div className="message-container" ref={ref => { this.chatbox = ref }}>
                     <div className="scroll-fix"></div>
                     {this.renderInitButton()}
