@@ -5,7 +5,6 @@ import './App.css';
 import Message from './Message';
 import wmsgParser from './socket';
 import config from './config/config.json';
-import Favicon from 'react-favicon';
 
 class App extends Component {
 
@@ -274,7 +273,6 @@ class App extends Component {
 
         return (
             <div className="chat-container">
-                <Favicon url="./static/favicon.ico" />
                 {form}
                 <div className="message-container" ref={ref => { this.chatbox = ref }}>
                     <div className="scroll-fix"></div>
