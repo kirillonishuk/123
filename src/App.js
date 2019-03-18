@@ -42,7 +42,13 @@ class App extends Component {
     };
 
     componentDidMount() {
-        let botId = window.location.pathname.slice(1);
+        const urls = window.location.pathname.split('/').filter(elem => elem);
+        let botId;
+        if(urls.length && urls[0] === 'chat') {
+            botId = urls[1];
+        } else if (urls.length) {
+            botId = urls[0];
+        };
         if (botId) {
             this.setState({
                 botId: botId,
@@ -54,7 +60,7 @@ class App extends Component {
                 }
                     
             });
-        }
+        };
     }
 
     componentDidUpdate(prevProps, prevState) {
