@@ -1,4 +1,4 @@
 module.exports = {
     httpPort: 3016,
-    httpsPort: 443
+    httpsPort: 3443
 }
