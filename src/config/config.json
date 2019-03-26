@@ -3,7 +3,11 @@
         "type": "web"
     },
     "urlWs": {
-        "development": "wss://localhost:443",
-        "production": "wss://localhost:443"
+        "development": "wss://localhost:3015",
+        "production": "wss://193.124.114.63:3015"
+    },
+    "urlHttp": {
+        "development": "wss://localhost:3015",
+        "production": "wss://193.124.114.63:3015"
     }
 }

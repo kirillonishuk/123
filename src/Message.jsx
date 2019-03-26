@@ -4,6 +4,8 @@ import classNames from 'classnames';
 import mime from 'mime-types';
 import config from './config/config.json';
 
+const httpUrl = window.location.port === '3016' || process.env.NODE_ENV === 'development' ?
+    config.urlWs[process.env.NODE_ENV] : '';
 
 class Message extends Component {
 
@@ -43,7 +45,7 @@ class Message extends Component {
             {this.renderTime()}
         </div>,
         'image': (messageType) => <div className={messageType}>
-            <a target="_blank" rel="noopener noreferrer" href={`${config.urlHttp[process.env.NODE_ENV]}/storage/${this.props.filename}`}>
+            <a target="_blank" rel="noopener noreferrer" href={`${httpUrl}/bot/storage/${this.props.filename}`}>
                 <img
                     src={`data:image/png;base64,${this.props.image}`}
                     alt="sending"

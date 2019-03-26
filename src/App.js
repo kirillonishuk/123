@@ -22,9 +22,15 @@ class App extends Component {
         };
 
         const url = config.urlWs[process.env.NODE_ENV];
-        this.socket = io(url, {
-            path: '/ws', transports: ['websocket']
-        });
+        if(window.location.port === '3016' || process.env.NODE_ENV === 'development') {
+            this.socket = io(url, {
+                path: '/ws-bot', transports: ['websocket']
+            });
+        } else {
+            this.socket = io({
+                path: '/ws-bot', transports: ['websocket']
+            });
+        };
 
         this.socket.on('web-bot-message', (wmsg) => {
             const result = wmsgParser(wmsg);
