@@ -49,25 +49,6 @@
     text-align: center;
 }
 
-.answer-button {
-    display: inline-block;
-    min-width: 45px;
-    margin: 4px;
-    padding: 2px 10px 5px;
-    border-radius: 8px;
-    text-align: center;
-    border: 1px solid rgb(3, 117, 208);
-    color: rgb(3, 117, 208);
-    cursor: pointer;
-    font-size: 14px;
-    user-select: none;
-}
-
-.answer-button:hover {
-    background: rgb(3, 117, 208);
-    color: #eceff1;
-}
-
 .image {
     padding: 0;
     background-color: initial;

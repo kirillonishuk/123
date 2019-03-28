@@ -1,16 +1,34 @@
+:root {
+  --main-color-grey: #99999999;
+}
+
+html, body, .chat-container {
+  width: 100%;
+  height: 100%;
+}
+
+body > * {
+  margin: 0; padding: 0;
+}
+
 .chat-container {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  border: 1px solid var(--main-color-grey);
   position: fixed;
-  right: 0; bottom: 0;
-  box-shadow: 0px 0px 45px 1px rgba(0, 0, 0, 0.35);
-  border-radius: 12px;
+  top: 0; left: 0;
+}
+
+.bot-empty-header {
+  height: 5px;
+  background: var(--main-color-grey);
 }
 
 .bot-connection-container {
   height: 45px;
   color: #fff;
-  background: #4aaef7;
-  border-top-left-radius: 12px;
-  border-top-right-radius: 12px;
+  background: var(--main-color-grey);
 }
 
 .bot-connection-container > label {
@@ -24,7 +42,7 @@
 .bot-connection-container > input {
   width: 225px;
   height: 21px;
-  background-color: #4aaef7;
+  background-color: var(--main-color-grey);
   color: #fff;
   font-weight: 540;
   font-size: 16px;
@@ -42,8 +60,8 @@
 }
 
 .message-container {
-  width: 400px;
-  height: 500px;
+  flex: 1 1 auto;
+  height: max-content;
   padding-bottom: 7.5px;
   text-align: left;
   overflow-y: scroll;
@@ -118,7 +136,7 @@
   height: 40px;
   margin: 15px auto 10px;
   display: block;
-  background: #42a5f5;
+  background: var(--main-color-grey);
   border-radius: 50%;
   text-align: center;
   color: #f0f0f0;
@@ -151,10 +169,36 @@
   height: 56px;
   background: white;
   opacity: .5;
-  border-bottom-left-radius: 12px;
-  border-bottom-right-radius: 12px;
 }
 
 .blocker-hide {
   display: none;
+}
+
+.buttons-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.answer-button {
+  display: inline-block;
+  min-width: 45px;
+  margin: 4px;
+  padding: 2px 10px 5px;
+  border-radius: 8px;
+  text-align: center;
+  border: 1px solid var(--main-color-grey);
+  color: #666;
+  cursor: pointer;
+  font-size: 14px;
+  user-select: none;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.answer-button:hover {
+    background: var(--main-color-grey);
+    color: #eceff1;
 }

@@ -18,11 +18,12 @@ class App extends Component {
             box: [],
             botIsActive: false,
             isIdInPath: false,
-            infoMessage: 'Введите ID бота и нажмите на кнопку для начала общения с ним.'
+            infoMessage: 'Введите ID бота и нажмите на кнопку для начала общения с ним.',
+            buttons: []
         };
 
         const url = config.urlWs[process.env.NODE_ENV];
-        if(window.location.port === '3016' || process.env.NODE_ENV === 'development') {
+        if (window.location.port === '3016' || process.env.NODE_ENV === 'development') {
             this.socket = io(url, {
                 path: '/ws-bot', transports: ['websocket']
             });
@@ -36,10 +37,17 @@ class App extends Component {
             const result = wmsgParser(wmsg);
 
             if (!(result.text === "/start" && result.type === "outgoing")) {
-                this.setState({
-                    box: this.state.box.concat(result)
-                })
-            }
+                if (result.form === 'keyboard') {
+                    console.log(result);
+                    this.setState({
+                        buttons: result.buttons
+                    });
+                } else {
+                    this.setState({
+                        box: this.state.box.concat(result)
+                    });
+                };
+            };
         });
 
         this.socket.on('web-bot-error', (wmsg) => {
@@ -50,7 +58,7 @@ class App extends Component {
     componentDidMount() {
         const urls = window.location.pathname.split('/').filter(elem => elem);
         let botId;
-        if(urls.length && urls[0] === 'chat') {
+        if (urls.length && urls[0] === 'chat') {
             botId = urls[1];
         } else if (urls.length) {
             botId = urls[0];
@@ -61,10 +69,10 @@ class App extends Component {
                 isIdInPath: true,
                 infoMessage: 'Нажмите на кнопку для начала общения с ботом.'
             }, () => {
-                if(window.location.hash === "#start"){
+                if (window.location.hash === "#start") {
                     this.startChat();
                 }
-                    
+
             });
         };
     }
@@ -108,8 +116,13 @@ class App extends Component {
         this.socket.emit('web-chat', message);
         if (!answer) {
             this.setState({
-                text: ''
-            })
+                text: '',
+                buttons: []
+            });
+        } else {
+            this.setState({
+                buttons: []
+            });
         };
         this.chat.disabled = false;
         this.chat.focus();
@@ -255,8 +268,23 @@ class App extends Component {
             </div>
         </form>
     };
+
+    renderButtons = () => {
+        if (this.state.buttons.length)
+            return (
+                <div className="buttons-container">
+                    {this.state.buttons.map((button, id) =>
+                        <div className="answer-button" key={id} onClick={(event) => this.sendMessage(event, button.text)}>
+                            {button.text.toUpperCase()}
+                        </div>
+                    )}
+                </div>)
+    }
+
     render() {
-        let form =
+        let form = this.state.isIdInPath ?
+            <div className="bot-empty-header"></div>
+            :
             <form className="bot-connection-container" onSubmit={this.startChat} autoComplete="off">
                 <label htmlFor="bot-id-input">ID Бота: </label>
                 <input
@@ -269,14 +297,6 @@ class App extends Component {
                 />
             </form>;
 
-        if (this.state.isIdInPath) {
-            form =
-                <form className="bot-connection-container">
-                    <label htmlFor="bot-id-input">ID Бота: </label>
-                    <span>{this.state.botId}</span>
-                </form>;
-        }
-
         return (
             <div className="chat-container">
                 {form}
@@ -285,6 +305,7 @@ class App extends Component {
                     {this.renderInitButton()}
                     {this.renderMessage()}
                 </div>
+                {this.renderButtons()}
                 {this.renderInput()}
             </div>
         );

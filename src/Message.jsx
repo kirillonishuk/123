@@ -67,11 +67,7 @@ class Message extends Component {
                 <source src={this.createFile()} type={this.props.mime} />
             </audio>
             {this.renderTime()}
-        </div>,
-        'keyboard': (messageType) => <div className={messageType}>
-            {this.renderButtons()}
-            {this.renderTime()}
-        </div>,
+        </div>
     };
 
     render() {
