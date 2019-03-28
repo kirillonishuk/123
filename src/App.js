@@ -283,7 +283,7 @@ class App extends Component {
 
     render() {
         let form = this.state.isIdInPath ?
-            <div className="bot-empty-header"></div>
+            <div className="bot--header"></div>
             :
             <form className="bot-connection-container" onSubmit={this.startChat} autoComplete="off">
                 <label htmlFor="bot-id-input">ID Бота: </label>

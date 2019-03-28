@@ -20,8 +20,7 @@ body > * {
   top: 0; left: 0;
 }
 
-.bot-empty-header {
-  height: 5px;
+.bot--header {
   background: var(--main-color-grey);
 }
 
