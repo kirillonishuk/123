@@ -175,12 +175,14 @@ body > * {
 }
 
 .buttons-container {
+  height: 31px;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
 }
 
 .answer-button {
+  height: 14px;
   display: inline-block;
   min-width: 45px;
   margin: 4px;
