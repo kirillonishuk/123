@@ -177,11 +177,9 @@ body > * {
 }
 
 .buttons-container {
-  padding-top: 6px;
-  padding-bottom: 6px;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  text-align: center
 }
 
 .answer-button {
