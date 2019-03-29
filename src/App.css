@@ -179,7 +179,6 @@ body > * {
 .buttons-container {
   padding-top: 6px;
   padding-bottom: 6px;
-  min-height: 31px;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
