@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './Message.css';
 import classNames from 'classnames';
 import mime from 'mime-types';
-import config from './config/config.json';
+import config from '../../config/config.json';
 
 const httpUrl = window.location.port === '3016' || process.env.NODE_ENV === 'development' ?
     config.urlWs[process.env.NODE_ENV] : '';
@@ -13,14 +13,6 @@ class Message extends Component {
         const file = new Blob([this.props.file], { type: this.props.mime || mime.lookup(this.props.name.split('.')[1]) });
 
         return URL.createObjectURL(file)
-    };
-
-    renderButtons = () => {
-        return this.props.buttons.map((button, id) =>
-            <div className="answer-button" key={id} onClick={(event) => this.props.sendMessage(event, button.text)}>
-                {button.text.toUpperCase()}
-            </div>
-        )
     };
 
     linkify = (text) => {

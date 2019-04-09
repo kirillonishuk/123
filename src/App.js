@@ -2,9 +2,13 @@ import React, { Component } from 'react';
 import io from 'socket.io-client';
 import classNames from 'classnames';
 import './App.css';
-import Message from './Message';
 import wmsgParser from './socket';
 import config from './config/config.json';
+
+import InitButton from './components/InitButton';
+import Buttons from './components/Buttons';
+import Header from './components/Header';
+import Chat from './components/Chat';
 
 class App extends Component {
 
@@ -214,19 +218,6 @@ class App extends Component {
         };
     };
 
-    renderMessage = () => {
-        return this.state.box.map((elem, id) => <Message sendMessage={this.sendMessage} key={id} {...elem} />)
-    };
-
-    renderInitButton = () => {
-        if (!this.state.botIsActive) return <div className="init-bot-btn">
-            <button onClick={this.startChat} className="start-chat-btn">
-                <i className="zmdi zmdi-arrow-right"></i>
-            </button>
-            <div className="start-chat-info">{this.state.infoMessage}</div>
-        </div>
-    };
-
     renderInput = () => {
         const blockerStyles = classNames({
             'blocker-hide': this.state.botIsActive,
@@ -269,43 +260,17 @@ class App extends Component {
         </form>
     };
 
-    renderButtons = () => {
-        if (this.state.buttons.length)
-            return (
-                <div className="buttons-container">
-                    {this.state.buttons.map((button, id) =>
-                        <div className="answer-button" key={id} onClick={(event) => this.sendMessage(event, button.text)}>
-                            {button.text.toUpperCase()}
-                        </div>
-                    )}
-                </div>)
-    }
-
     render() {
-        let form = this.state.isIdInPath ?
-            <div className="bot--header"></div>
-            :
-            <form className="bot-connection-container" onSubmit={this.startChat} autoComplete="off">
-                <label htmlFor="bot-id-input">ID Бота: </label>
-                <input
-                    autoFocus
-                    type="text"
-                    id="bot-id-input"
-                    placeholder="Введите ID"
-                    value={this.state.botId}
-                    onChange={(event) => { this.setState({ botId: event.target.value }) }}
-                />
-            </form>;
-
         return (
             <div className="chat-container">
-                {form}
+                <Header isIdInPath={this.state.isIdInPath} botId={this.state.botId}
+                    startChat={this.startChat} setBotId={(event) => { this.setState({ botId: event.target.value }) }} />
                 <div className="message-container" ref={ref => { this.chatbox = ref }}>
                     <div className="scroll-fix"></div>
-                    {this.renderInitButton()}
-                    {this.renderMessage()}
+                    <InitButton botIsActive={this.state.botIsActive} infoMessage={this.state.infoMessage} startChat={this.startChat} />
+                    <Chat box={this.state.box} sendMessage={this.sendMessage} />
                 </div>
-                {this.renderButtons()}
+                <Buttons buttons={this.state.buttons} />
                 {this.renderInput()}
             </div>
         );

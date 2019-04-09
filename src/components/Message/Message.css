@@ -30,7 +30,7 @@
 .incoming::before {
     width: 40px; height: 40px;
     border-radius: 50%;
-    background-image: url(./static/bot-avatar.png);
+    background-image: url(../../static/bot-avatar.png);
     background-repeat: no-repeat;
     background-size: 40px;
     position: absolute;
@@ -82,7 +82,7 @@
     background-size: 24px auto;
     height: 24px;
     width: 24px;
-    background-image: url(./static/clip-big.png);
+    background-image: url(../../static/clip-big.png);
 }
 
 .file-size {
