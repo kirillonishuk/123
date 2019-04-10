@@ -270,7 +270,7 @@ class App extends Component {
                     <InitButton botIsActive={this.state.botIsActive} infoMessage={this.state.infoMessage} startChat={this.startChat} />
                     <Chat box={this.state.box} sendMessage={this.sendMessage} />
                 </div>
-                <Buttons buttons={this.state.buttons} />
+                <Buttons buttons={this.state.buttons} sendMessage={this.sendMessage} />
                 {this.renderInput()}
             </div>
         );
